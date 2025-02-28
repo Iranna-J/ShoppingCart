@@ -1,10 +1,17 @@
 package com.example.ShoppingCart.config;
 
-public class ResponseStructure<T> {
+public class AuthResponse<T> {
 	private int status;
 	private String message;
+	private String token;
 	private Object data;
 
+	public String getToken() {
+		return token;
+	}
+	public void setToken(String token) {
+		this.token = token;
+	}
 	public int getStatus() {
 		return status;
 	}

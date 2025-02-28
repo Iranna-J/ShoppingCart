@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.ShoppingCart.config.AuthResponse;
 import com.example.ShoppingCart.config.PasswordValidator;
 import com.example.ShoppingCart.config.ResponseStructure;
 import com.example.ShoppingCart.domain.Role;
@@ -36,7 +37,7 @@ public class UserServiceImpl implements UserService {
 	private JWTUtil jwtUtil;
 
 	@Override
-	public ResponseEntity<ResponseStructure<User>> saveUser(User user) {
+	public ResponseEntity<AuthResponse<User>> saveUser(User user) {
 		EnumSet<Role> validRoles = EnumSet.of(Role.ADMIN, Role.CUSTOMER, Role.SELLER);
 
 		if (!validRoles.contains(user.getRole())) {
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
 		User u = userRepo.save(user);
 		String token = jwtUtil.generateToken(user);
 
-		ResponseStructure<User> responseStructure = new ResponseStructure<>();
+		AuthResponse<User> responseStructure = new AuthResponse<>();
 		responseStructure.setStatus(HttpStatus.CREATED.value());
 		responseStructure.setMessage("User Created Successfully!!!");
 		responseStructure.setToken(token);

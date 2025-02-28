@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.example.ShoppingCart.config.AuthResponse;
 import com.example.ShoppingCart.config.ResponseStructure;
 import com.example.ShoppingCart.domain.User;
 import com.example.ShoppingCart.dto.LoginRequest;
@@ -28,7 +29,7 @@ public class LoginServiceImpl implements LoginService{
 	private JWTUtil jwtUtil;
 
 	@Override
-	public ResponseEntity<ResponseStructure<String>> loginUser(LoginRequest loginRequest) {
+	public ResponseEntity<AuthResponse<String>> loginUser(LoginRequest loginRequest) {
 		User u=loginRepo.findByEmail(loginRequest.getEmail());
 		
 		if(u==null) {
@@ -38,7 +39,7 @@ public class LoginServiceImpl implements LoginService{
 		if(isAuthenticated(loginRequest)) {
 			User user=loginRepo.findByEmail(loginRequest.getEmail());
 			String token=jwtUtil.generateToken(user);
-			ResponseStructure<String> responseStructure=new ResponseStructure<>();
+			AuthResponse<String> responseStructure=new AuthResponse<>();
 			responseStructure.setStatus(HttpStatus.OK.value());
 			responseStructure.setMessage("User loged in Successfully!!!");
 			responseStructure.setToken(token);

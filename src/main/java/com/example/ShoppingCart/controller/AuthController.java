@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.ShoppingCart.config.AuthResponse;
 import com.example.ShoppingCart.config.ResponseStructure;
 import com.example.ShoppingCart.dto.LoginRequest;
 import com.example.ShoppingCart.service.LoginService;
@@ -18,7 +19,7 @@ public class AuthController {
 	private LoginService loginService;
 	
 	@PostMapping
-	public ResponseEntity<ResponseStructure<String>> loginUser(@RequestBody LoginRequest loginRequest){
+	public ResponseEntity<AuthResponse<String>> loginUser(@RequestBody LoginRequest loginRequest){
 		return loginService.loginUser(loginRequest);
 	}
 }
