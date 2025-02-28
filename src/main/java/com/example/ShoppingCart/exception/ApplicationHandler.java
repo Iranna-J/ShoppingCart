@@ -59,6 +59,16 @@ public class ApplicationHandler {
 
 	    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
+	
+	@ExceptionHandler(UserNotFoundByIdException.class)
+	public ResponseEntity<ResponseStructure<String>> userNotFoundById(UserNotFoundByIdException ex){
+		ResponseStructure<String> responseStructure=new ResponseStructure<>();
+		responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
+		responseStructure.setMessage(ex.getMessage());
+		responseStructure.setData(null);
+		
+		return new ResponseEntity<>(responseStructure, HttpStatus.NOT_FOUND);
+	}
 
 
 }
