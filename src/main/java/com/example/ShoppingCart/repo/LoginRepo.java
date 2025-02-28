@@ -10,9 +10,7 @@ import com.example.ShoppingCart.domain.User;
 
 @Repository
 @EnableJpaRepositories
-public interface UserRepo extends JpaRepository<User, Long> {
-	boolean existsByEmail(String email);
-
-	Optional<User> findByEmail(String email);
-
+public interface LoginRepo extends JpaRepository<User, Long>{
+	User findByEmail(String email);
+	Optional<User> findOneByEmailAndPassword(String email, String password);
 }
