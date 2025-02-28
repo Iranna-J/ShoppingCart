@@ -9,56 +9,66 @@ import com.example.ShoppingCart.config.ResponseStructure;
 
 @RestControllerAdvice
 public class ApplicationHandler {
-	
-//	@ExceptionHandler(UserRoleNotMatchException.class)
-//	public ResponseEntity<ResponseStructure<String>> handleUserRoleNotMatch(UserRoleNotMatchException ex) {
-//	    ResponseStructure<String> responseStructure = new ResponseStructure<>();
-//	    responseStructure.setStatus(HttpStatus.NO_CONTENT.value());
-//	    responseStructure.setMessage("Invalid role");
-//	    responseStructure.setData("Data is not created");
-//
-//	    return new ResponseEntity<>(responseStructure, HttpStatus.NO_CONTENT);
-//	}
-	
+
 	@ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ResponseStructure<String>> handleInvalidEnum(IllegalArgumentException ex) {
-        ResponseStructure<String> responseStructure = new ResponseStructure<>();
-        responseStructure.setStatus(HttpStatus.BAD_REQUEST.value());
-        responseStructure.setMessage(ex.getMessage());
-        responseStructure.setData("Role must be one of: ADMIN, SELLER, CUSTOMER");
+	public ResponseEntity<ResponseStructure<String>> handleInvalidEnum(IllegalArgumentException ex) {
+		ResponseStructure<String> responseStructure = new ResponseStructure<>();
+		responseStructure.setStatus(HttpStatus.BAD_REQUEST.value());
+		responseStructure.setMessage(ex.getMessage());
+		responseStructure.setData("Role must be one of: ADMIN, SELLER, CUSTOMER");
 
-        return new ResponseEntity<>(responseStructure, HttpStatus.BAD_REQUEST);
-    }
-	
-	@ExceptionHandler(InvalidPasswordException.class)
-    public ResponseEntity<ResponseStructure<String>> handleInvalidPasswordException(InvalidPasswordException ex) {
-        ResponseStructure<String> response = new ResponseStructure<>();
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.setMessage(ex.getMessage());
-        response.setData(null);
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-	
-	@ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ResponseStructure<String>> handleDuplicateEmailException(DuplicateEmailException ex) {
-        ResponseStructure<String> response = new ResponseStructure<>();
-        response.setStatus(HttpStatus.BAD_REQUEST.value());
-        response.setMessage(ex.getMessage());
-        response.setData(null);
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-	
-	@ExceptionHandler(InvalidMobileNumberException.class)
-	public ResponseEntity<ResponseStructure<String>> handleInvalidMobileNumberException(InvalidMobileNumberException ex) {
-	    ResponseStructure<String> response = new ResponseStructure<>();
-	    response.setStatus(HttpStatus.BAD_REQUEST.value());
-	    response.setMessage(ex.getMessage());
-	    response.setData(null);
-
-	    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<>(responseStructure, HttpStatus.BAD_REQUEST);
 	}
 
+	@ExceptionHandler(InvalidPasswordException.class)
+	public ResponseEntity<ResponseStructure<String>> handleInvalidPasswordException(InvalidPasswordException ex) {
+		ResponseStructure<String> response = new ResponseStructure<>();
+		response.setStatus(HttpStatus.BAD_REQUEST.value());
+		response.setMessage(ex.getMessage());
+		response.setData(null);
+
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(DuplicateEmailException.class)
+	public ResponseEntity<ResponseStructure<String>> handleDuplicateEmailException(DuplicateEmailException ex) {
+		ResponseStructure<String> response = new ResponseStructure<>();
+		response.setStatus(HttpStatus.BAD_REQUEST.value());
+		response.setMessage(ex.getMessage());
+		response.setData(null);
+
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(InvalidMobileNumberException.class)
+	public ResponseEntity<ResponseStructure<String>> handleInvalidMobileNumberException(
+			InvalidMobileNumberException ex) {
+		ResponseStructure<String> response = new ResponseStructure<>();
+		response.setStatus(HttpStatus.BAD_REQUEST.value());
+		response.setMessage(ex.getMessage());
+		response.setData(null);
+
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(UserNotFoundException.class)
+	public ResponseEntity<ResponseStructure<String>> handleUserNotFoundException(UserNotFoundException ex) {
+		ResponseStructure<String> response = new ResponseStructure<>();
+		response.setStatus(HttpStatus.NOT_FOUND.value());
+		response.setMessage(ex.getMessage());
+		response.setData(null);
+
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	}
+
+	@ExceptionHandler(InvalidCredentialsException.class)
+	public ResponseEntity<ResponseStructure<String>> handleInvalidCredentialsException(InvalidCredentialsException ex) {
+		ResponseStructure<String> response = new ResponseStructure<>();
+		response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		response.setMessage(ex.getMessage());
+		response.setData(null);
+
+		return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+	}
 
 }
