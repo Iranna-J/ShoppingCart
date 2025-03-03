@@ -20,8 +20,8 @@ public class ApplicationHandler {
 		return new ResponseEntity<>(responseStructure, HttpStatus.BAD_REQUEST);
 	}
 	
-	@ExceptionHandler(UserNotFoundByIdException.class)
-	public ResponseEntity<ResponseStructure<String>> userNotFoundById(UserNotFoundByIdException ex){
+	@ExceptionHandler(notFoundByIdException.class)
+	public ResponseEntity<ResponseStructure<String>> userNotFoundById(notFoundByIdException ex){
 		ResponseStructure<String> responseStructure=new ResponseStructure<>();
 		responseStructure.setStatus(HttpStatus.NOT_FOUND.value());
 		responseStructure.setMessage(ex.getMessage());
@@ -79,6 +79,16 @@ public class ApplicationHandler {
 		response.setData(null);
 
 		return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+	}
+	
+	@ExceptionHandler(ProductAlreadyExistException.class)
+	public ResponseEntity<ResponseStructure<String>> handleDuplicateProducts(ProductAlreadyExistException ex){
+		ResponseStructure<String> response=new ResponseStructure<>();
+		response.setStatus(HttpStatus.CONFLICT.value());
+		response.setMessage(ex.getMessage());
+		response.setData(null);
+		
+		return new ResponseEntity<>(response, HttpStatus.CONFLICT);
 	}
 
 }

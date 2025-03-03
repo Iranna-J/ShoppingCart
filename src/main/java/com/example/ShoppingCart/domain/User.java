@@ -1,113 +1,81 @@
 package com.example.ShoppingCart.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.PrePersist;
-import jakarta.persistence.PreUpdate;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "users")
 public class User {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private long id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
+	@Column(nullable = false)
 	private String name;
 
 	@Column(nullable = false, unique = true)
 	private String email;
 
+	@Column(nullable = false)
 	private String password;
-	private long mobile;
+
+	@Column(nullable = false, unique = true)
+	private Long mobile;
 
 	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
 	private Role role;
+
+	@OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonManagedReference // Ensures serialization of seller details in product response
+	private List<Product> products;
 
 	@Column(nullable = false, updatable = false)
 	private LocalDateTime createdAt;
-	
-	@PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
-    }
 
-    @PreUpdate
-    protected void onUpdate() {
-        updatedAt = LocalDateTime.now();
-    }
-
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
-	}
-
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
+	@Column(nullable = false)
 	private LocalDateTime updatedAt;
 
-	public long getId() {
-		return id;
+	@PrePersist
+	protected void onCreate() {
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 
-	public void setId(long id) {
-		this.id = id;
+	@PreUpdate
+	protected void onUpdate() {
+		this.updatedAt = LocalDateTime.now();
 	}
 
-	public String getName() {
-		return name;
-	}
+	// Getters and Setters
+	public Long getId() { return id; }
+	public void setId(Long id) { this.id = id; }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	public String getName() { return name; }
+	public void setName(String name) { this.name = name; }
 
-	public String getEmail() {
-		return email;
-	}
+	public String getEmail() { return email; }
+	public void setEmail(String email) { this.email = email; }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+	public String getPassword() { return password; }
+	public void setPassword(String password) { this.password = password; }
 
-	public String getPassword() {
-		return password;
-	}
+	public Long getMobile() { return mobile; }
+	public void setMobile(Long mobile) { this.mobile = mobile; }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+	public Role getRole() { return role; }
+	public void setRole(Role role) { this.role = role; }
 
-	public long getMobile() {
-		return mobile;
-	}
+	public List<Product> getProducts() { return products; }
+	public void setProducts(List<Product> products) { this.products = products; }
 
-	public void setMobile(long mobile) {
-		this.mobile = mobile;
-	}
+	public LocalDateTime getCreatedAt() { return createdAt; }
+	public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
-	public Role getRole() {
-		return role;
-	}
-
-	public void setRole(Role role) {
-		this.role = role;
-	}
-
+	public LocalDateTime getUpdatedAt() { return updatedAt; }
+	public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
 }
