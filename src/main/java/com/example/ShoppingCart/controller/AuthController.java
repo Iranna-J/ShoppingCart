@@ -9,14 +9,24 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.ShoppingCart.config.AuthResponse;
 import com.example.ShoppingCart.config.ResponseStructure;
+import com.example.ShoppingCart.domain.User;
 import com.example.ShoppingCart.dto.LoginRequest;
 import com.example.ShoppingCart.service.LoginService;
+import com.example.ShoppingCart.service.UserService;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 public class AuthController {
 	@Autowired
 	private LoginService loginService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@PostMapping("/signup")
+	public ResponseEntity<AuthResponse<User>> saveUser(@RequestBody User user) {
+		return userService.saveUser(user);
+	}
 	
 	@PostMapping
 	public ResponseEntity<AuthResponse<String>> loginUser(@RequestBody LoginRequest loginRequest){

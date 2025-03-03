@@ -94,7 +94,7 @@ public class UserServiceImpl implements UserService {
 		List<User> userList = new ArrayList<>();
 		userList = userRepo.findAll();
 		ResponseStructure<User> responseStructure = new ResponseStructure<>();
-		responseStructure.setStatus(HttpStatus.FOUND.value());
+		responseStructure.setStatus(HttpStatus.OK.value());
 		responseStructure.setMessage("All users found successfully!!!");
 		responseStructure.setData(userList);
 
