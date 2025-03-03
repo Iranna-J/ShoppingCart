@@ -25,10 +25,10 @@ public class UserController {
 	@Autowired
 	private UserService userService;
 	
-	@PostMapping
-	public ResponseEntity<AuthResponse<User>> saveUser(@RequestBody User user) {
-		return userService.saveUser(user);
-	}
+//	@PostMapping("/signup")
+//	public ResponseEntity<AuthResponse<User>> saveUser(@RequestBody User user) {
+//		return userService.saveUser(user);
+//	}
 	
 	@GetMapping
 	public ResponseEntity<ResponseStructure<User>> getUser(@RequestParam long id){
