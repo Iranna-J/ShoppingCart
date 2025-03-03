@@ -15,7 +15,7 @@ public class ApplicationHandler {
 		ResponseStructure<String> responseStructure = new ResponseStructure<>();
 		responseStructure.setStatus(HttpStatus.BAD_REQUEST.value());
 		responseStructure.setMessage(ex.getMessage());
-		responseStructure.setData("Role must be one of: ADMIN, SELLER, CUSTOMER");
+		responseStructure.setData(null);
 
 		return new ResponseEntity<>(responseStructure, HttpStatus.BAD_REQUEST);
 	}
@@ -89,6 +89,26 @@ public class ApplicationHandler {
 		response.setData(null);
 		
 		return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+	}
+	
+	@ExceptionHandler(InsufficientStockException.class)
+	public ResponseEntity<ResponseStructure<String>> handleDuplicateProducts(InsufficientStockException ex){
+		ResponseStructure<String> response=new ResponseStructure<>();
+		response.setStatus(HttpStatus.NOT_FOUND.value());
+		response.setMessage(ex.getMessage());
+		response.setData(null);
+		
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	}
+	
+	@ExceptionHandler(OrderStatusNotMatchException.class)
+	public ResponseEntity<ResponseStructure<String>> orderStatusNotMatch(OrderStatusNotMatchException ex){
+		ResponseStructure<String> response=new ResponseStructure<>();
+		response.setStatus(HttpStatus.NOT_FOUND.value());
+		response.setMessage(ex.getMessage());
+		response.setData(null);
+		
+		return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
 	}
 
 }

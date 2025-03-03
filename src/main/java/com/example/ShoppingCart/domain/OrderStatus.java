@@ -1,18 +1,21 @@
 package com.example.ShoppingCart.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.stream.Stream;
 
-public enum Role {
-	ADMIN,
-	SELLER,
-	CUSTOMER;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
+public enum OrderStatus {
+    PENDING,
+    PROCESSING,
+    SHIPPED,
+    DELIVERED,
+    CANCELLED;
 	
 	@JsonCreator
-    public static Role fromString(String value) {
-        return Stream.of(Role.values())
-                .filter(role -> role.name().equalsIgnoreCase(value))
+    public static OrderStatus fromString(String value) {
+        return Stream.of(OrderStatus.values())
+                .filter(status -> status.name().equalsIgnoreCase(value))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(""));
     }
