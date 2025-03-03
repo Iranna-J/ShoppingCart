@@ -19,8 +19,8 @@ import com.example.ShoppingCart.domain.User;
 import com.example.ShoppingCart.exception.DuplicateEmailException;
 import com.example.ShoppingCart.exception.InvalidMobileNumberException;
 import com.example.ShoppingCart.exception.InvalidPasswordException;
-import com.example.ShoppingCart.exception.UserNotFoundByIdException;
 import com.example.ShoppingCart.exception.UserRoleNotMatchException;
+import com.example.ShoppingCart.exception.notFoundByIdException;
 import com.example.ShoppingCart.repo.UserRepo;
 import com.example.ShoppingCart.util.JWTUtil;
 
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService {
 	public ResponseEntity<ResponseStructure<User>> getUser(long id) {
 		Optional<User> user = userRepo.findById(id);
 		if (user.isEmpty()) {
-			throw new UserNotFoundByIdException("User doesn't exist!!");
+			throw new notFoundByIdException("User doesn't exist!!");
 		}
 		ResponseStructure<User> responseStructure = new ResponseStructure<>();
 		responseStructure.setStatus(HttpStatus.FOUND.value());
@@ -106,7 +106,7 @@ public class UserServiceImpl implements UserService {
 	    Optional<User> existingUserOptional = userRepo.findById(id);
 	    
 	    if (existingUserOptional.isEmpty()) {
-	        throw new UserNotFoundByIdException("User doesn't exist!!!");
+	        throw new notFoundByIdException("User doesn't exist!!!");
 	    }
 
 	    User existingUser = existingUserOptional.get();
@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
 	public ResponseEntity<ResponseStructure<User>> deleteUser(long id) {
 		Optional<User> user=userRepo.findById(id);
 		if(user.isEmpty()) {
-			throw new UserNotFoundByIdException("User Doen't exist!!!");
+			throw new notFoundByIdException("User Doen't exist!!!");
 		}
 		userRepo.delete(user.get());
 		ResponseStructure<User> responseStructure=new ResponseStructure<>();
