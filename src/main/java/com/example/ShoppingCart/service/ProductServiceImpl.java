@@ -5,6 +5,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -29,7 +32,9 @@ public class ProductServiceImpl implements ProductService {
 	private UserRepo userRepo;
 
 	@Override
-	public ResponseEntity<ResponseStructure<ProductResponseDTO>> saveProduct(Product product) {
+	@CachePut(value = "products", key = "#product.seller.id")
+	@CacheEvict(value = "productList", allEntries = true)
+	public ProductResponseDTO saveProduct(Product product) {
 		Optional<User> user = userRepo.findById(product.getSeller().getId());
 		if (user.isEmpty()) {
 			throw new UserNotFoundException("Seller doesn't exist!!!");
@@ -42,55 +47,44 @@ public class ProductServiceImpl implements ProductService {
 		}
 
 		Product savedProduct = productRepo.save(product);
-
-		ProductResponseDTO productResponseDTO = new ProductResponseDTO(savedProduct);
-
-		ResponseStructure<ProductResponseDTO> responseStructure = new ResponseStructure<>();
-		responseStructure.setStatus(HttpStatus.CREATED.value());
-		responseStructure.setMessage("Product added successfully!!!");
-		responseStructure.setData(productResponseDTO);
-
-		return new ResponseEntity<>(responseStructure, HttpStatus.CREATED);
+		return new ProductResponseDTO(savedProduct); // ✅ Cache only the DTO
 	}
 
 	@Override
-	public ResponseEntity<ResponseStructure<ProductResponseDTO>> getProductById(Long id) {
+	@Cacheable(value = "products", key = "#id")
+	public ProductResponseDTO getProductById(Long id) {
 		Optional<Product> optionalProduct = productRepo.findById(id);
 		if (optionalProduct.isPresent()) {
-			ProductResponseDTO productResponseDTO = new ProductResponseDTO(optionalProduct.get());
-			ResponseStructure<ProductResponseDTO> responseStructure = new ResponseStructure<>();
-			responseStructure.setStatus(HttpStatus.FOUND.value());
-			responseStructure.setMessage("Product found successfully!!!");
-			responseStructure.setData(productResponseDTO);
-			return new ResponseEntity<>(responseStructure, HttpStatus.FOUND);
+			return new ProductResponseDTO(optionalProduct.get());
 		}
 		throw new notFoundByIdException("Product not found!!!");
 	}
 
 	@Override
-	public ResponseEntity<ResponseStructure<List<ProductResponseDTO>>> getAllProducts() {
-		List<Product> products = productRepo.findAll();
-
-		List<ProductResponseDTO> productDTOs = products.stream().map(ProductResponseDTO::new)
-				.collect(Collectors.toList());
-
-		ResponseStructure<List<ProductResponseDTO>> responseStructure = new ResponseStructure<>();
-		responseStructure.setStatus(HttpStatus.OK.value());
-		responseStructure.setMessage("Products retrieved successfully!!!");
-		responseStructure.setData(productDTOs);
-
-		return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+	@Cacheable(value = "productList") // ✅ Cache only the data, not ResponseEntity
+	public List<ProductResponseDTO> getAllProducts() {
+	    List<Product> products = productRepo.findAll();
+	    return products.stream()
+	            .map(ProductResponseDTO::new)
+	            .collect(Collectors.toList());
 	}
 
-	@Override
-	public ResponseEntity<ResponseStructure<ProductResponseDTO>> updateProduct(long productId, Product updatedProduct) {
-		Optional<Product> existingProductOpt = productRepo.findById(productId);
 
+	@Override
+	@CachePut(value = "products", key = "#productId")
+	@CacheEvict(value = "productList", allEntries = true)
+	public ProductResponseDTO updateProduct(long productId, Product updatedProduct) {
+		Optional<Product> existingProductOpt = productRepo.findById(productId);
 		if (existingProductOpt.isEmpty()) {
 			throw new notFoundByIdException("Product with ID " + productId + " not found!");
 		}
 
 		Product existingProduct = existingProductOpt.get();
+		Optional<Product> productWithSameName = productRepo.findByName(updatedProduct.getName());
+		if (productWithSameName.isPresent() && !productWithSameName.get().getId().equals(productId)) {
+			throw new ProductAlreadyExistException(
+					"Product with name '" + updatedProduct.getName() + "' already exists!");
+		}
 
 		Optional<User> sellerOpt = userRepo.findById(updatedProduct.getSeller().getId());
 		if (sellerOpt.isEmpty()) {
@@ -107,27 +101,20 @@ public class ProductServiceImpl implements ProductService {
 		existingProduct.setUpdatedAt(updatedProduct.getUpdatedAt());
 
 		Product savedProduct = productRepo.save(existingProduct);
-
-		ResponseStructure<ProductResponseDTO> responseStructure = new ResponseStructure<>();
-		responseStructure.setStatus(HttpStatus.OK.value());
-		responseStructure.setMessage("Product updated successfully!!!");
-		responseStructure.setData(new ProductResponseDTO(savedProduct));
-
-		return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+		return new ProductResponseDTO(savedProduct);
 	}
 
 	@Override
-	public ResponseEntity<ResponseStructure<ProductResponseDTO>> deleteProduct(long id) {
+	@CacheEvict(value = { "products", "productList" }, allEntries = true)
+	public ProductResponseDTO deleteProduct(long id) {
 		Optional<Product> optionalProduct = productRepo.findById(id);
 		if (optionalProduct.isPresent()) {
 			ProductResponseDTO productResponseDTO = new ProductResponseDTO(optionalProduct.get());
+
 			productRepo.deleteById(id);
-			ResponseStructure<ProductResponseDTO> responseStructure = new ResponseStructure<>();
-			responseStructure.setStatus(HttpStatus.OK.value());
-			responseStructure.setMessage("Product deleted successfully!!!");
-			responseStructure.setData(productResponseDTO);
-			return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+			return new ProductResponseDTO(optionalProduct.get());
 		}
 		throw new notFoundByIdException("Product not found!!!");
 	}
+
 }

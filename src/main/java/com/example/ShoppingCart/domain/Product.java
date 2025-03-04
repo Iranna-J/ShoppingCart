@@ -1,5 +1,6 @@
 package com.example.ShoppingCart.domain;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
@@ -11,7 +12,7 @@ import jakarta.persistence.*;
 @Entity
 @JsonIgnoreProperties({ "hibernateLazyInitializer", "handler" }) // Ignore Hibernate proxy properties
 @Table(name = "products")
-public class Product {
+public class Product implements Serializable{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
