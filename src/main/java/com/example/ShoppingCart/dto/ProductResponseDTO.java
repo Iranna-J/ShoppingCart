@@ -1,21 +1,20 @@
 package com.example.ShoppingCart.dto;
-
+import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 import com.example.ShoppingCart.domain.Product;
 
-public class ProductResponseDTO {
+public class ProductResponseDTO implements Serializable {  
+    private static final long serialVersionUID = 1L;  
+
     private Long id;
     private String name;
     private String description;
     private BigDecimal price;
-    private Integer stockQuantity;
+    private int stockQuantity;
     private String category;
     private String imageUrl;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private SellerDTO seller;
+    private Long sellerId;
 
     public ProductResponseDTO(Product product) {
         this.id = product.getId();
@@ -25,9 +24,7 @@ public class ProductResponseDTO {
         this.stockQuantity = product.getStockQuantity();
         this.category = product.getCategory();
         this.imageUrl = product.getImageUrl();
-        this.createdAt = product.getCreatedAt();
-        this.updatedAt = product.getUpdatedAt();
-        this.seller = new SellerDTO(product.getSeller());
+        this.sellerId = product.getSeller().getId();
     }
 
 	public Long getId() {
@@ -62,11 +59,11 @@ public class ProductResponseDTO {
 		this.price = price;
 	}
 
-	public Integer getStockQuantity() {
+	public int getStockQuantity() {
 		return stockQuantity;
 	}
 
-	public void setStockQuantity(Integer stockQuantity) {
+	public void setStockQuantity(int stockQuantity) {
 		this.stockQuantity = stockQuantity;
 	}
 
@@ -86,29 +83,17 @@ public class ProductResponseDTO {
 		this.imageUrl = imageUrl;
 	}
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
+	public Long getSellerId() {
+		return sellerId;
 	}
 
-	public void setCreatedAt(LocalDateTime createdAt) {
-		this.createdAt = createdAt;
+	public void setSellerId(Long sellerId) {
+		this.sellerId = sellerId;
 	}
 
-	public LocalDateTime getUpdatedAt() {
-		return updatedAt;
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
-	public void setUpdatedAt(LocalDateTime updatedAt) {
-		this.updatedAt = updatedAt;
-	}
-
-	public SellerDTO getSeller() {
-		return seller;
-	}
-
-	public void setSeller(SellerDTO seller) {
-		this.seller = seller;
-	}
     
 }
-
